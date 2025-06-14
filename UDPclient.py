@@ -6,3 +6,7 @@ if __name__ == "__main__":
         sys.exit(1)
     host, port, filelist = sys.argv[1], int(sys.argv[2]), sys.argv[3]
     print(f"[Client] Connecting to {host}:{port}, using file list {filelist}")
+
+    with open(filelist, 'r') as f:
+        filenames = [line.strip() for line in f if line.strip()]
+    print("Files to download:", filenames)
