@@ -1,12 +1,18 @@
-import sys
+import sys, socket, time
+
+def send_and_receive(sock, message, server_address, retries=5):
+    timeout = 0.5
+    for attempt in range(retries):
+        try:
+            sock.sendto(message.encode(), server_address)
+            sock.settimeout(timeout)
+            response, _ = sock.recvfrom(2048)
+            return response.decode()
+        except socket.timeout:
+            print(f"[Client] Timeout waiting for response. Retrying {attempt+1}/{retries}...")
+            timeout *= 2
+    return None
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        print("Usage: python3 UDPclient.py <hostname> <port> <filelist>")
-        sys.exit(1)
-    host, port, filelist = sys.argv[1], int(sys.argv[2]), sys.argv[3]
-    print(f"[Client] Connecting to {host}:{port}, using file list {filelist}")
-
-    with open(filelist, 'r') as f:
-        filenames = [line.strip() for line in f if line.strip()]
-    print("Files to download:", filenames)
+    # 省略前面的参数检查与读取文件列表逻辑
+    pass
